@@ -1,0 +1,102 @@
+/* Base Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+body {
+  font-family: "Source Code Pro", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: url(topo.svg);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Custom Fonts
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+@font-face {
+  font-family: 'Nitti-Normal';
+  src: url('fonts/Nitti-Normal.otf') format('opentype'); /*URL to font*/
+}
+
+/* Logo
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.logo {
+  margin-top: 100px;
+}
+
+.mark svg {
+  display: block;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+
+.logo h3 {
+  font-family: "Nitti-Normal", "Source Code Pro", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #0B0B0B;
+  font-size: 30px;
+  text-align: center;
+}
+
+/* Hero
+–––––––––––––––––––––––––––––––––––––––––––––––––– 00F7A1 */
+
+.hero {
+  margin-top: 100px;
+  color: #6C7478;
+  text-align: center;
+}
+
+.download {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 100px;
+}
+.notifyme.button.button-primary {
+  background-color: #0B0B0B;
+  border-color: #0B0B0B;
+}
+
+.hero-image img {
+  padding-top: 100px;
+  display: block;
+  margin: 0 auto;
+  width: 640px;
+}
+
+
+
+/* Footer
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+footer {
+  text-align: center;
+  display: block;
+  margin-top: -200px;
+  height: 432px;
+  background-color: #51CAF4;
+}
+
+footer a {
+  color: #0B0B0B;
+}
+
+footer a:hover {
+  color: #fff;
+}
+
+.bottom {
+  padding-top: 340px;
+}
+
+.copyright {
+  padding-top: 20px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.copyright a {
+  color: rgba(0, 0, 0, 0.2);
+}
