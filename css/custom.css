@@ -63,7 +63,8 @@ a {
   padding-top: 100px;
   display: block;
   margin: 0 auto;
-  width: 640px;
+  max-width: 100%;
+  height: auto;
 }
 
 
