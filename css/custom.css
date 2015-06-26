@@ -54,9 +54,15 @@ a {
   margin-top: 3rem;
   margin-bottom: 100px;
 }
+
 .notifyme.button.button-primary {
   background-color: #0B0B0B;
   border-color: #0B0B0B;
+}
+
+.notifyme.button.button-primary:hover {
+  background-color: #6C7478;
+  border-color: #6C7478;
 }
 
 .hero-image img {
@@ -66,8 +72,6 @@ a {
   max-width: 100%;
   height: auto;
 }
-
-
 
 /* Footer
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
