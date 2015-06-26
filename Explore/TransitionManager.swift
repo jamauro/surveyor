@@ -50,8 +50,8 @@ class TransitionManager: NSObject, UIViewControllerAnimatedTransitioning, UIView
         }
         
         // add the both views to our view controller. NOTE: order matters
-        container!.addSubview(bottomView)
-        container!.addSubview(menuView)
+        container.addSubview(bottomView)
+        container.addSubview(menuView)
         
         
         

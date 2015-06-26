@@ -83,7 +83,7 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
         
         let cards = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         dir = "N"
-        for (i, card) in cards.enumerate() {
+        for (i, card) in enumerate(cards) {
             if heading < 45.0/2.0 + 45.0*Double(i) {
                 dir = card
                 break

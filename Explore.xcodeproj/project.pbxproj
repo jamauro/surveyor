@@ -49,12 +49,6 @@
 		88D8A56A1B31E7BB00091D4A /* map-layers@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88D8A5681B31E7BB00091D4A /* map-layers@2x.png */; };
 		88D8A56B1B31E7BB00091D4A /* map-layers@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88D8A5691B31E7BB00091D4A /* map-layers@3x.png */; };
 		88D8A56D1B3208FF00091D4A /* MapSelectionModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D8A56C1B3208FF00091D4A /* MapSelectionModalViewController.swift */; };
-		88E48B5F1B34CCEC0006DB90 /* launch4.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E48B5B1B34CCEC0006DB90 /* launch4.png */; };
-		88E48B601B34CCEC0006DB90 /* launch3.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E48B5C1B34CCEC0006DB90 /* launch3.png */; };
-		88E48B611B34CCEC0006DB90 /* launch2.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E48B5D1B34CCEC0006DB90 /* launch2.png */; };
-		88E48B621B34CCEC0006DB90 /* launch1.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E48B5E1B34CCEC0006DB90 /* launch1.png */; };
-		88E48B641B34CDF60006DB90 /* launch1_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E48B631B34CDF60006DB90 /* launch1_2.png */; };
-		88E48B661B34EE770006DB90 /* launch5.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E48B651B34EE770006DB90 /* launch5.png */; };
 		AE9FE02C9BFAF2BED1DAA466 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5EB7C300024D9A9D5D3C5 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -128,12 +122,6 @@
 		88D8A5681B31E7BB00091D4A /* map-layers@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map-layers@2x.png"; sourceTree = "<group>"; };
 		88D8A5691B31E7BB00091D4A /* map-layers@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map-layers@3x.png"; sourceTree = "<group>"; };
 		88D8A56C1B3208FF00091D4A /* MapSelectionModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapSelectionModalViewController.swift; sourceTree = "<group>"; };
-		88E48B5B1B34CCEC0006DB90 /* launch4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch4.png; sourceTree = "<group>"; };
-		88E48B5C1B34CCEC0006DB90 /* launch3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch3.png; sourceTree = "<group>"; };
-		88E48B5D1B34CCEC0006DB90 /* launch2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch2.png; sourceTree = "<group>"; };
-		88E48B5E1B34CCEC0006DB90 /* launch1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch1.png; sourceTree = "<group>"; };
-		88E48B631B34CDF60006DB90 /* launch1_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch1_2.png; sourceTree = "<group>"; };
-		88E48B651B34EE770006DB90 /* launch5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch5.png; sourceTree = "<group>"; };
 		8BC64557C9F651D53C31B4A2 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		C9C5EB7C300024D9A9D5D3C5 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -210,15 +198,9 @@
 				88D8A5641B31E2C600091D4A /* contract@2x.png */,
 				88D8A5651B31E2C600091D4A /* contract@3x.png */,
 				88879FAA1B2B77C5007CA6CC /* arrow-up@2x.png */,
-				88E48B5B1B34CCEC0006DB90 /* launch4.png */,
-				88E48B631B34CDF60006DB90 /* launch1_2.png */,
-				88E48B5C1B34CCEC0006DB90 /* launch3.png */,
-				88E48B5D1B34CCEC0006DB90 /* launch2.png */,
 				8846D1411B38E0670046DB62 /* launch6.png */,
 				8846D1421B38E0670046DB62 /* launch6@2x.png */,
 				8846D1431B38E0670046DB62 /* launch6@3x.png */,
-				88E48B651B34EE770006DB90 /* launch5.png */,
-				88E48B5E1B34CCEC0006DB90 /* launch1.png */,
 				88879FAB1B2B77C5007CA6CC /* arrow-up@3x.png */,
 				887A6CAB1B2A3A3A00938E70 /* ViewController.swift */,
 				885B0F561B331D2A00DF0BB4 /* TransitionManager.swift */,
@@ -329,7 +311,7 @@
 				TargetAttributes = {
 					887A6CA31B2A3A3A00938E70 = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = 5NG8PQYXG2;
+						DevelopmentTeam = 69879Q6Z4H;
 					};
 					887A6CB81B2A3A3A00938E70 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -371,7 +353,6 @@
 				88D8A5671B31E2C600091D4A /* contract@3x.png in Resources */,
 				88879FA11B2B722D007CA6CC /* Nitti-Normal.otf in Resources */,
 				887A6CAF1B2A3A3A00938E70 /* Main.storyboard in Resources */,
-				88E48B621B34CCEC0006DB90 /* launch1.png in Resources */,
 				88D8A56A1B31E7BB00091D4A /* map-layers@2x.png in Resources */,
 				88B95DC21B33BC8B001DAAE9 /* coordinates-background@2x.png in Resources */,
 				8865A93D1B2E498400AA38D9 /* map@3x.png in Resources */,
@@ -381,22 +362,17 @@
 				8846D1461B38E0670046DB62 /* launch6@3x.png in Resources */,
 				88B5D2EB1B30EE790036CE1C /* arrow-down@2x.png in Resources */,
 				88B5D2EC1B30EE790036CE1C /* arrow-down@3x.png in Resources */,
-				88E48B611B34CCEC0006DB90 /* launch2.png in Resources */,
-				88E48B661B34EE770006DB90 /* launch5.png in Resources */,
 				889FD5D51B2BA9FD004761D8 /* minicompass@3x.png in Resources */,
 				88B95DC31B33BC8B001DAAE9 /* coordinates-background@3x.png in Resources */,
 				88D8A56B1B31E7BB00091D4A /* map-layers@3x.png in Resources */,
 				8846D1451B38E0670046DB62 /* launch6@2x.png in Resources */,
 				88879FB71B2B85E2007CA6CC /* TopTicks@2x.png in Resources */,
-				88E48B601B34CCEC0006DB90 /* launch3.png in Resources */,
 				887A6CB11B2A3A3A00938E70 /* Images.xcassets in Resources */,
 				88879FB91B2B8F8B007CA6CC /* Settings.bundle in Resources */,
 				88B5D2E91B30EE790036CE1C /* arrow-default@2x.png in Resources */,
 				8846D1441B38E0670046DB62 /* launch6.png in Resources */,
 				88879FB51B2B8467007CA6CC /* ExploreCompassFinal@2x.png in Resources */,
-				88E48B641B34CDF60006DB90 /* launch1_2.png in Resources */,
 				88B5D2E71B30EE790036CE1C /* arrow-level@2x.png in Resources */,
-				88E48B5F1B34CCEC0006DB90 /* launch4.png in Resources */,
 				88B5D2E81B30EE790036CE1C /* arrow-level@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

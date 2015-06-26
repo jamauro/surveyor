@@ -139,7 +139,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     override func viewDidLoad() {
         super.viewDidLoad()
         userLocationData.startTracking()
-        print("initialLocation " + String(userLocationData.initialLocation))
+        print("initialLocation " + toString(userLocationData.initialLocation))
         // Do any additional setup after loading the view, typically from a nib.
         print("main view loaded")
 
@@ -233,7 +233,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         
         
         // get pressure via forecast API
-        // getWeatherConditions()
+        // swift 2: can remove nil
+        getWeatherConditions(nil)
         
         /*
         // get the pressure with built-in barometer for iPhone 6
@@ -301,16 +302,48 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             
     }
     
-    
-    func getWeatherConditions(notification: NSNotification? = nil) {
+    // swift 2 can have notification: NSNotification? = nil
+    func getWeatherConditions(notification: NSNotification?) {
         //will be called initially and any time app enters foreground
         
-        let urlPath = "https://api.forecast.io/forecast/c84e4d9cf49c636a24795958ec4cce8b/" + String(latitude) + "," + String(longitude)
+        let urlPath = "https://api.forecast.io/forecast/c84e4d9cf49c636a24795958ec4cce8b/" + toString(latitude) + "," + toString(longitude)
         
         let url = NSURL(string: urlPath)
         print(url!)
+  
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithURL(url!) { (data, response, error) -> Void in
+          if error == nil {
+            
+            let jsonResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
+            
+            print(jsonResult)
+            
+            let hourlyData = jsonResult["hourly"]!["data"]! as! NSArray
+            
+            for data in hourlyData {
+              let pressureInFuture = data["pressure"]!
+              self.futurePressures.append(pressureInFuture as! Double)
+            }
+            
+            
+            print(self.futurePressures)
+            let pressureDirection = self.determinePressureDirection(self.futurePressures)
+            
+            let currentConditions = jsonResult["currently"]
+            let currentPressure = currentConditions?["pressure"]
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+              self.pressure = self.convertPressure(currentPressure as! Double)
+              self.pressureLabel.text = "\(self.pressure)"
+              self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
+            })
+            
+          } else {
+            print(error)
+            self.pressureLabel.text = "N/A"
+          }
+          /* swift 2.0
             do {
                 let jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
                 print(jsonResult)
@@ -348,17 +381,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
                 print(error)
                 self.pressureLabel.text = "N/A"
             }
-            
+            */
         }
         
-        task?.resume()
+        task.resume()
         
     }
     
     func convertPressure(pressureInMB: Double) -> Double {
         let pressureInHG = pressureInMB * 0.0295333727
         print(pressureInHG)
-        return roundToDecimal(pressureInHG, numberOfPlaces: 1.0)
+        return roundToDecimal(pressureInHG, 1.0)
     }
 
     /*
@@ -494,8 +527,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
                 // mapView.setCenterCoordinate(CLLocationCoordinate2D(latitude: latitude, longitude: longitude), zoomLevel: 15, animated: true)
                 // coordinatesLabel.text = self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon)
                 UIView.performWithoutAnimation({ () -> Void in
-                    self.coordinatesButton.setTitle(self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon), forState: .Normal)
-                    self.coordinatesButton.layoutIfNeeded()
+                  self.coordinatesButton.setTitle(self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon), forState: .Normal)
+                  
+                  self.coordinatesButton.layoutIfNeeded()
                 })
                 
                 altitudeLabel.text = userLocationData.altitude
@@ -537,7 +571,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             self.map.frame = self.view.bounds
             self.map.layer.cornerRadius = 0
             // this makes the map's subviews align like they should when it expands.
-            self.map.translatesAutoresizingMaskIntoConstraints = true
+            // XCODE BUG, fixed in xcode 7: self.map.translatesAutoresizingMaskIntoConstraints = true
+            self.map.setTranslatesAutoresizingMaskIntoConstraints(true)
+          
         })) { (complete) -> Void in
             
             
@@ -550,7 +586,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             print(self.map.subviews)
             print(self.userLocationData.lat)
             self.coordinatesButton.hidden = false
-            self.coordinatesButton.setTitle(self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon), forState: .Normal)
+            // gps may not have updated yet
+            if self.userLocationData.lat != nil {
+              self.coordinatesButton.setTitle(self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon), forState: .Normal)
+            } else {
+              self.coordinatesButton.setTitle(self.coordinateString(self.latitude, longitude: self.longitude), forState: .Normal)
+            }
+          
             // self.coordinatesBackground.hidden = false
             // self.coordinatesLabel.hidden = false
             self.shrink.hidden = false
