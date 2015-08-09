@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		880957B71B4203270021D9BD /* WeatherAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880957B61B4203270021D9BD /* WeatherAlertViewController.swift */; };
+		880957B91B436BC60021D9BD /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880957B81B436BC50021D9BD /* StringExtensions.swift */; };
 		883AFA481B39FE0D00599F11 /* Nitti-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 883AFA471B39FE0C00599F11 /* Nitti-Bold.otf */; };
 		8846D1441B38E0670046DB62 /* launch6.png in Resources */ = {isa = PBXBuildFile; fileRef = 8846D1411B38E0670046DB62 /* launch6.png */; };
 		8846D1451B38E0670046DB62 /* launch6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8846D1421B38E0670046DB62 /* launch6@2x.png */; };
@@ -43,6 +45,9 @@
 		88B5D2EC1B30EE790036CE1C /* arrow-down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88B5D2E61B30EE790036CE1C /* arrow-down@3x.png */; };
 		88B95DC21B33BC8B001DAAE9 /* coordinates-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88B95DC01B33BC8B001DAAE9 /* coordinates-background@2x.png */; };
 		88B95DC31B33BC8B001DAAE9 /* coordinates-background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88B95DC11B33BC8B001DAAE9 /* coordinates-background@3x.png */; };
+		88C0C47C1B470B1B00400CCB /* ApiKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 88C0C47B1B470B1B00400CCB /* ApiKeys.plist */; };
+		88C0C47E1B470B8200400CCB /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C0C47D1B470B8200400CCB /* ApiKeys.swift */; };
+		88CFF2AC1B4505B900E594CA /* PassThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88CFF2AB1B4505B900E594CA /* PassThroughView.swift */; };
 		88D859411B30B9A0008BF2F9 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D859401B30B9A0008BF2F9 /* Utils.swift */; };
 		88D8A5661B31E2C600091D4A /* contract@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88D8A5641B31E2C600091D4A /* contract@2x.png */; };
 		88D8A5671B31E2C600091D4A /* contract@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88D8A5651B31E2C600091D4A /* contract@3x.png */; };
@@ -77,6 +82,8 @@
 
 /* Begin PBXFileReference section */
 		06EF18A6DD4CC5F6B6A37F69 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		880957B61B4203270021D9BD /* WeatherAlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherAlertViewController.swift; sourceTree = "<group>"; };
+		880957B81B436BC50021D9BD /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringExtensions.swift; path = ../StringExtensions.swift; sourceTree = "<group>"; };
 		883AFA471B39FE0C00599F11 /* Nitti-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nitti-Bold.otf"; sourceTree = "<group>"; };
 		8846D1411B38E0670046DB62 /* launch6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch6.png; sourceTree = "<group>"; };
 		8846D1421B38E0670046DB62 /* launch6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch6@2x.png"; sourceTree = "<group>"; };
@@ -116,6 +123,9 @@
 		88B5D2E61B30EE790036CE1C /* arrow-down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-down@3x.png"; sourceTree = "<group>"; };
 		88B95DC01B33BC8B001DAAE9 /* coordinates-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coordinates-background@2x.png"; sourceTree = "<group>"; };
 		88B95DC11B33BC8B001DAAE9 /* coordinates-background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coordinates-background@3x.png"; sourceTree = "<group>"; };
+		88C0C47B1B470B1B00400CCB /* ApiKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ApiKeys.plist; path = ../ApiKeys.plist; sourceTree = "<group>"; };
+		88C0C47D1B470B8200400CCB /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiKeys.swift; path = ../ApiKeys.swift; sourceTree = "<group>"; };
+		88CFF2AB1B4505B900E594CA /* PassThroughView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PassThroughView.swift; sourceTree = "<group>"; };
 		88D859401B30B9A0008BF2F9 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		88D8A5641B31E2C600091D4A /* contract@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contract@2x.png"; sourceTree = "<group>"; };
 		88D8A5651B31E2C600091D4A /* contract@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contract@3x.png"; sourceTree = "<group>"; };
@@ -172,6 +182,7 @@
 		887A6CA61B2A3A3A00938E70 /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				880957B81B436BC50021D9BD /* StringExtensions.swift */,
 				88879FB81B2B8F8B007CA6CC /* Settings.bundle */,
 				88879F9E1B2B71E0007CA6CC /* Nitti-Light.otf */,
 				88879FA01B2B722D007CA6CC /* Nitti-Normal.otf */,
@@ -205,7 +216,9 @@
 				887A6CAB1B2A3A3A00938E70 /* ViewController.swift */,
 				885B0F561B331D2A00DF0BB4 /* TransitionManager.swift */,
 				887A6CAD1B2A3A3A00938E70 /* Main.storyboard */,
+				88CFF2AB1B4505B900E594CA /* PassThroughView.swift */,
 				88D8A56C1B3208FF00091D4A /* MapSelectionModalViewController.swift */,
+				880957B61B4203270021D9BD /* WeatherAlertViewController.swift */,
 				8865A9381B2DE47700AA38D9 /* LocUtils.swift */,
 				88D859401B30B9A0008BF2F9 /* Utils.swift */,
 				889FD5D01B2B944C004761D8 /* MapViewController.swift */,
@@ -218,6 +231,8 @@
 		887A6CA71B2A3A3A00938E70 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				88C0C47B1B470B1B00400CCB /* ApiKeys.plist */,
+				88C0C47D1B470B8200400CCB /* ApiKeys.swift */,
 				887A6CA81B2A3A3A00938E70 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -352,6 +367,7 @@
 				88879FAD1B2B77C5007CA6CC /* arrow-up@3x.png in Resources */,
 				88D8A5671B31E2C600091D4A /* contract@3x.png in Resources */,
 				88879FA11B2B722D007CA6CC /* Nitti-Normal.otf in Resources */,
+				88C0C47C1B470B1B00400CCB /* ApiKeys.plist in Resources */,
 				887A6CAF1B2A3A3A00938E70 /* Main.storyboard in Resources */,
 				88D8A56A1B31E7BB00091D4A /* map-layers@2x.png in Resources */,
 				88B95DC21B33BC8B001DAAE9 /* coordinates-background@2x.png in Resources */,
@@ -441,8 +457,12 @@
 			files = (
 				88D8A56D1B3208FF00091D4A /* MapSelectionModalViewController.swift in Sources */,
 				88D859411B30B9A0008BF2F9 /* Utils.swift in Sources */,
+				88C0C47E1B470B8200400CCB /* ApiKeys.swift in Sources */,
+				88CFF2AC1B4505B900E594CA /* PassThroughView.swift in Sources */,
 				885B0F571B331D2A00DF0BB4 /* TransitionManager.swift in Sources */,
+				880957B91B436BC60021D9BD /* StringExtensions.swift in Sources */,
 				8865A9391B2DE47700AA38D9 /* LocUtils.swift in Sources */,
+				880957B71B4203270021D9BD /* WeatherAlertViewController.swift in Sources */,
 				887A6CAC1B2A3A3A00938E70 /* ViewController.swift in Sources */,
 				889FD5D11B2B944C004761D8 /* MapViewController.swift in Sources */,
 				887A6CAA1B2A3A3A00938E70 /* AppDelegate.swift in Sources */,

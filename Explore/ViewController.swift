@@ -118,8 +118,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     var altimeter = CMAltimeter()
     
     var mapIsFullScreen = false
-    
-    
+  
+    var weatherAlertVC: WeatherAlertViewController!
+    var alertTitle: String!
+    var alertLocalExpireTime: String!
+    var alertDescription: String!
+
 
     deinit {
         
@@ -139,9 +143,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     override func viewDidLoad() {
         super.viewDidLoad()
         userLocationData.startTracking()
+  
         print("initialLocation " + toString(userLocationData.initialLocation))
         // Do any additional setup after loading the view, typically from a nib.
         print("main view loaded")
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .None)
 
         /*testing LocUtils
         locationManager.delegate = self
@@ -252,9 +258,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             // get pressure data from an API?
         }
         */
-        
-        print("ending viewDidLoad")
-        
+      
     }
     
     
@@ -303,10 +307,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     }
     
     // swift 2 can have notification: NSNotification? = nil
+    // this func will be called initially and any time app enters foreground
     func getWeatherConditions(notification: NSNotification?) {
-        //will be called initially and any time app enters foreground
-        
-        let urlPath = "https://api.forecast.io/forecast/c84e4d9cf49c636a24795958ec4cce8b/" + toString(latitude) + "," + toString(longitude)
+      
+        let forecastID = valueForAPIKey(keyname: "API_CLIENT_ID")
+        // let urlPath = "https://api.forecast.io/forecast/\(forecastID)/37.6783,-92.6617"
+      
+        let urlPath = "https://api.forecast.io/forecast/\(forecastID)/" + toString(latitude) + "," + toString(longitude)
         
         let url = NSURL(string: urlPath)
         print(url!)
@@ -314,31 +321,58 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithURL(url!) { (data, response, error) -> Void in
           if error == nil {
-            
-            let jsonResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
-            
-            print(jsonResult)
-            
-            let hourlyData = jsonResult["hourly"]!["data"]! as! NSArray
-            
-            for data in hourlyData {
-              let pressureInFuture = data["pressure"]!
-              self.futurePressures.append(pressureInFuture as! Double)
-            }
-            
-            
-            print(self.futurePressures)
-            let pressureDirection = self.determinePressureDirection(self.futurePressures)
-            
-            let currentConditions = jsonResult["currently"]
-            let currentPressure = currentConditions?["pressure"]
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-              self.pressure = self.convertPressure(currentPressure as! Double)
-              self.pressureLabel.text = "\(self.pressure)"
-              self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
-            })
-            
+
+              let jsonResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
+              
+              print(jsonResult)
+              
+              let hourlyData = jsonResult["hourly"]!["data"]! as! NSArray
+              
+              for data in hourlyData {
+                let pressureInFuture: Double = data["pressure"] as! Double
+                self.futurePressures.append(pressureInFuture)
+              }
+              
+              
+              // print(self.futurePressures)
+              let pressureDirection = self.determinePressureDirection(self.futurePressures)
+              
+              let currentConditions = jsonResult["currently"]
+              let currentPressure = currentConditions?["pressure"]
+    
+              
+              if let alerts: NSArray = jsonResult["alerts"] as? NSArray {
+                let lastAlert: AnyObject = alerts.lastObject!
+                print("last alert is: \(lastAlert)")
+                if let alertTitle = lastAlert["title"] as? String {
+                  self.alertTitle = alertTitle.trimUpTo("for").uppercaseString
+                }
+                if let expires: NSTimeInterval = lastAlert["expires"] as? NSTimeInterval {
+                  self.alertLocalExpireTime = self.formatDate(expires)
+                }
+                
+                if let description = lastAlert["description"] as? String {
+                  self.alertDescription = self.formatDescription(description)
+                  print("description is: \(description)")
+                }
+                
+                /* WEATHER ALERTS!
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                  self.showWeatherAlert()
+                })
+                */
+      
+                
+              }
+              
+              
+              dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.pressure = self.convertPressure(currentPressure as! Double)
+                self.pressureLabel.text = "\(self.pressure)"
+                self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
+              })
+
+
           } else {
             print(error)
             self.pressureLabel.text = "N/A"
@@ -388,11 +422,84 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         
     }
     
-    func convertPressure(pressureInMB: Double) -> Double {
-        let pressureInHG = pressureInMB * 0.0295333727
-        print(pressureInHG)
-        return roundToDecimal(pressureInHG, 1.0)
+  func convertPressure(pressureInMB: Double) -> Double {
+      let pressureInHG = pressureInMB * 0.0295333727
+      print(pressureInHG)
+      return roundToDecimal(pressureInHG, 1.0)
+  }
+  
+  func formatDescription(var description: String) -> String {
+    
+    description = description.stringByReplacingOccurrencesOfString("\n", withString: " ")
+    description = description.stringByReplacingOccurrencesOfString(". ", withString: ". \n\n").capitalizedString
+
+    return description
+  }
+  
+  func formatDate(time: NSTimeInterval) -> String {
+    let expiresAt = NSDate(timeIntervalSince1970: time)
+    let dateFormatter = NSDateFormatter()
+    dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+    dateFormatter.timeZone = NSTimeZone()
+    
+    let today = NSCalendar.currentCalendar().isDateInToday(expiresAt)
+    let tomorrow = NSCalendar.currentCalendar().isDateInTomorrow(expiresAt)
+    
+    var expiresFormatted: String = "Expires: "
+    
+    if today == true {
+      expiresFormatted = expiresFormatted + "\(dateFormatter.stringFromDate(expiresAt))"
+    } else if tomorrow == true {
+      expiresFormatted = expiresFormatted + "Tomorrow at \(dateFormatter.stringFromDate(expiresAt))"
+    } else {
+      dateFormatter.dateFormat = "EEEE, MMM d 'at' h:mm a"
+      expiresFormatted = expiresFormatted + "\(dateFormatter.stringFromDate(expiresAt))"
     }
+      
+    return expiresFormatted.uppercaseString
+  }
+  
+  func showWeatherAlert() {
+    if self.childViewControllers.count == 0 {
+    
+      weatherAlertVC = storyboard?.instantiateViewControllerWithIdentifier("WeatherAlertViewController") as! WeatherAlertViewController
+      self.addChildViewController(weatherAlertVC)
+    
+      // pass data
+      weatherAlertVC.alertTitle = self.alertTitle
+      weatherAlertVC.alertExpiresAt = self.alertLocalExpireTime
+      print(self.alertLocalExpireTime)
+      weatherAlertVC.alertDescription = self.alertDescription
+      weatherAlertVC.prefersStatusBarHidden() == true
+    
+      weatherAlertVC.view.frame = CGRectMake(0, -weatherAlertVC.view.frame.size.height, weatherAlertVC.view.frame.size.width, weatherAlertVC.view.frame.size.height)
+      self.view.addSubview(weatherAlertVC.view)
+      
+      
+      UIView.animateWithDuration(0.25, delay: 0.5, usingSpringWithDamping: 1.0, initialSpringVelocity: 2.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+        self.weatherAlertVC.view.frame = CGRectMake(0, 0, self.weatherAlertVC.view.frame.size.width, self.weatherAlertVC.view.frame.size.height)
+      }, completion: { (finished) -> Void in
+        self.weatherAlertVC.didMoveToParentViewController(self)
+      })
+      
+    }
+    
+    
+  }
+  
+  
+  func dismissWeatherAlert() {
+    UIView.animateWithDuration(1, animations: { () -> Void in
+      self.weatherAlertVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width, -self.view.frame.size.height)
+      }, completion: { (finished) -> Void in
+        self.weatherAlertVC.view.removeFromSuperview()
+        self.weatherAlertVC.removeFromParentViewController()
+        self.weatherAlertVC = nil
+    })
+
+  }
+  
+  
 
     /*
     func takeScreenShot() -> UIImage {
@@ -471,11 +578,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     
    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "modalViewControllerSegue" {
-            var destination = segue.destinationViewController as! MapSelectionModalViewController
-            destination.delegate = self
-            
-        }
+      if (segue.identifier == "modalViewControllerSegue") {
+        let destination = segue.destinationViewController as! MapSelectionModalViewController
+        destination.delegate = self
+      } else if (segue.identifier == "weatherAlertSegue") {
+        print("alert title is: \(self.alertTitle)")
+        let destination = segue.destinationViewController as! WeatherAlertViewController
+        destination.alertTitle = alertTitle
+        destination.alertExpiresAt = alertLocalExpireTime
+        destination.alertDescription = alertDescription
+        // destination.delegate = self
+      }
+      
         
         /*
         if segue.identifier == "mapSegue" {
@@ -512,6 +626,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         }
         
     }
+  
+  
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         
@@ -622,7 +738,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     @IBAction func unwindToViewController (sender: UIStoryboardSegue){
         
     }
-
+  
+  
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
