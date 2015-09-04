@@ -15,6 +15,8 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
     
     var locationManager = CLLocationManager()
     var initialLocation: CLLocation!
+    var locationAchieved: Bool = false
+    var getInitialLocation: Bool = false
     var lat: CLLocationDegrees!
     var lon: CLLocationDegrees!
     var dir = ""
@@ -40,9 +42,6 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
     func startTracking() {
         
         self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
-        self.initialLocation = self.locationManager.location
-        self.locationManager.startUpdatingHeading()
         
         /*
         locationManager.delegate = self
@@ -55,7 +54,14 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
 
     }
 
-
+  func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    if status == CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.AuthorizedAlways {
+      getInitialLocation = true
+      self.locationManager.startUpdatingLocation()
+      // self.initialLocation = self.locationManager.location
+      self.locationManager.startUpdatingHeading()
+    }
+  }
     
     func locationManagerShouldDisplayHeadingCalibration(manager: CLLocationManager) -> Bool {
         // TODO: figure out if this is right
@@ -108,12 +114,26 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
 
         self.willChangeValueForKey("location")
         let userLocation: CLLocation = locations[0] as! CLLocation
-        
-        self.lat = userLocation.coordinate.latitude
-        self.lon = userLocation.coordinate.longitude
-
-        self.altitude = String(format:"%.0f", userLocation.altitude)
-
+      
+        if userLocation.horizontalAccuracy > 0 {
+          // locationAchieved = true
+          self.lat = userLocation.coordinate.latitude
+          self.lon = userLocation.coordinate.longitude
+          /*
+          if getInitialLocation == true {
+            print(" initial lat is: \(lat) ")
+            // rootVC.initializeMapAndWeather()
+            
+            getInitialLocation = false
+          }
+          */
+      }
+      
+        // set altitude in FT
+        if userLocation.verticalAccuracy > 0 {
+          self.altitude = String(format:"%.0f", userLocation.altitude.ft)
+        }
+      
         self.didChangeValueForKey("location")
         // altitudeLabel.text = altitude
         

@@ -14,17 +14,31 @@ import MapboxGL
 class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, MapSelectionModalDelegate {
 
     @IBOutlet var compassImage: UIImageView!
+    @IBOutlet var northMarksImage: UIImageView!
     @IBOutlet var courseLabel: UILabel!
     @IBOutlet var directionLabel: UILabel!
     @IBOutlet var altitudeLabel: UILabel!
     @IBOutlet var altitudeUnitsLabel: UILabel!
     @IBOutlet var pressureLabel: UILabel!
     @IBOutlet var pressureUnitsLabel: UILabel!
-    
+    @IBOutlet var altitudeWindSwitchView: UIView!
+    @IBOutlet var baroTempSwitchView: UIView!
+    @IBOutlet var altWindLabel: UILabel!
+    @IBOutlet var baroTempLabel: UILabel!
+    @IBOutlet var weatherIcon: UIImageView!
+    @IBOutlet var windDirImage: UIImageView!
+    @IBOutlet var windDirLabel: UILabel!
+  
+    var windSpeed: Double = 0.0
+    var windDir: String! = "-"
+    var windBearing: Double!
+    var windBearingRadians: Double! = 0.0
+    var temp: Double!
     var pressure: Double!
     var futurePressures = [Double]()
     // var pressureInHG: Double!
-    
+    // var initialMapConstraints = [AnyObject]()
+  
     @IBOutlet var pressureDirectionLabel: UIImageView!
     @IBOutlet var map: MGLMapView! 
     @IBOutlet var mapTouchView: UIView!
@@ -106,15 +120,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     var altitude = ""
     */
     
-    var latitude: CLLocationDegrees! = 32.752073
-    var longitude: CLLocationDegrees! = -117.130324
+    // var latitude: CLLocationDegrees! = 32.752073
+    // var longitude: CLLocationDegrees! = -117.130324
 
     let mapCornerRadius: CGFloat = 10
     
     let userLocationData = LocUtils.sharedInstance
     
     var tap: UITapGestureRecognizer!
-    
+    var switchAltWind: UITapGestureRecognizer!
+    var switchBaroTemp: UITapGestureRecognizer!
+  
+    var altitudeShowing: Bool = true
+    var baroShowing: Bool = true
+  
     var altimeter = CMAltimeter()
     
     var mapIsFullScreen = false
@@ -123,7 +142,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     var alertTitle: String!
     var alertLocalExpireTime: String!
     var alertDescription: String!
-
+  
+  
 
     deinit {
         
@@ -168,29 +188,40 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         
         print("initial mapTouch frame: \(mapTouchView.frame)")
         */
-        
+        map.attributionButton.hidden = true
+        map.logoView.hidden = true
         coordinatesBackground.hidden = true
         coordinatesLabel.hidden = true
         coordinatesButton.hidden = true
         shrink.hidden = true
         mapLayers.hidden = true
         coordinatesButton.layer.cornerRadius = 8
+      
+        windDirImage.hidden = true
+        windDirLabel.hidden = true
         
         
         tap = UITapGestureRecognizer(target: self, action: "handleTap:")
         tap.delegate = self
         print(mapTouchView)
         mapTouchView.addGestureRecognizer(tap)
-
+      
+        switchAltWind = UITapGestureRecognizer(target: self, action: "handleSwitch:")
+        switchAltWind.delegate = self
+        altitudeWindSwitchView.addGestureRecognizer(switchAltWind)
+      
+        switchBaroTemp = UITapGestureRecognizer(target: self, action: "handleSwitch:")
+        switchBaroTemp.delegate = self
+        baroTempSwitchView.addGestureRecognizer(switchBaroTemp)
         
         
         userLocationData.addObserver(self, forKeyPath: "heading", options: NSKeyValueObservingOptions(), context: nil)
         userLocationData.addObserver(self, forKeyPath: "location", options: NSKeyValueObservingOptions(), context: nil)
         
         // update weather data when app enters foreground
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "getWeatherConditions:", name: "getWeatherConditions", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshData:", name: "refreshData", object: nil)
         
-        
+        print(" map in viewDidLoad: \(map) ")
         map.layer.cornerRadius = mapCornerRadius
         
         // if user has stored map selection then use that, otherwise load the default
@@ -201,23 +232,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         } else {
             setMapStyle(mapSelection as! Int)
         }
-        
-        if userLocationData.initialLocation != nil {
-            latitude = userLocationData.initialLocation.coordinate.latitude
-            longitude = userLocationData.initialLocation.coordinate.longitude
-            
-        }
-        
-        print("lat and lon used: ")
-        print(latitude)
-        print(longitude)
-        
-        
-        
-        // set the map's center coordinate
-        map.setCenterCoordinate(CLLocationCoordinate2D(latitude: latitude, longitude: longitude), zoomLevel: 15, animated: true)
-        map.allowsRotating = true
-        map.userTrackingMode = MGLUserTrackingMode.Follow
+      
+      
+      
+        // set the map's center coordinate and get weather data
+        print(" userLocation lon in viewDidLoad: \(userLocationData.lon) ")
+        // if userLocationData.initialLocation != nil {
+          // latitude = userLocationData.initialLocation.coordinate.latitude
+          // longitude = userLocationData.initialLocation.coordinate.longitude
+      
+          // map.setCenterCoordinate(CLLocationCoordinate2D(latitude: latitude, longitude: longitude), zoomLevel: 15, animated: true)
+      if userLocationData.lat != nil {
+        print(" lon before centering map: \(userLocationData.lon) ")
+        map.setCenterCoordinate(CLLocationCoordinate2D(latitude: userLocationData.lat, longitude: userLocationData.lon), zoomLevel: 15, animated: true)
+      }
+          map.allowsRotating = true
+          map.userTrackingMode = MGLUserTrackingMode.Follow
+          
+          // get weather data via forecast API
+          // getWeatherConditions(latitude, longitude: longitude)
+        // }
+      
+      
         /*
         for subview in map.subviews {
             
@@ -238,10 +274,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         // mapView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
         
         
-        // get pressure via forecast API
-        // swift 2: can remove nil
-        getWeatherConditions(nil)
-        
+      
+      
+      
         /*
         // get the pressure with built-in barometer for iPhone 6
         if CMAltimeter.isRelativeAltitudeAvailable() {
@@ -258,7 +293,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             // get pressure data from an API?
         }
         */
-      
+        print(" finishing viewDidLoad")
     }
     
     
@@ -278,7 +313,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         }
         */
     }
-    
+  
+  
     func setMapStyle(number: Int) {
         switch number {
             case 0:
@@ -305,10 +341,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         controller.dismissViewControllerAnimated(true, completion: nil)
             
     }
-    
-    // swift 2 can have notification: NSNotification? = nil
+  
     // this func will be called initially and any time app enters foreground
-    func getWeatherConditions(notification: NSNotification?) {
+    // swift 2 can have notification: NSNotification? = nil
+    func refreshData(notification: NSNotification?) {
+      print(" lat in refreshData is: \(userLocationData.lat) ")
+      getWeatherConditions(userLocationData.lat, longitude: userLocationData.lon)
+    }
+  
+  
+    func getWeatherConditions(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
+      
+      // print(" initialLocation lat: \(userLocationData.initialLocation.coordinate.latitude) ")
+      print(" lon: \(longitude) ")
+      
+  
       
         let forecastID = valueForAPIKey(keyname: "API_CLIENT_ID")
         // let urlPath = "https://api.forecast.io/forecast/\(forecastID)/37.6783,-92.6617"
@@ -339,7 +386,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
               
               let currentConditions = jsonResult["currently"]
               let currentPressure = currentConditions?["pressure"]
-    
+              self.windSpeed = roundToDecimal(currentConditions?["windSpeed"] as! Double, 1.0)
+              self.windBearing = currentConditions?["windBearing"] as! Double
+              self.windDir = self.getWindDirection(self.windBearing)
+              self.windBearingRadians = (-1.0 * self.windBearing * M_PI)/180.0
+              self.temp = roundToDecimal(currentConditions?["temperature"] as! Double, 1.0)
               
               if let alerts: NSArray = jsonResult["alerts"] as? NSArray {
                 let lastAlert: AnyObject = alerts.lastObject!
@@ -356,11 +407,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
                   print("description is: \(description)")
                 }
                 
-                /* WEATHER ALERTS!
+                // WEATHER ALERTS!
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                   self.showWeatherAlert()
                 })
-                */
+                
       
                 
               }
@@ -368,7 +419,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
               
               dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 self.pressure = self.convertPressure(currentPressure as! Double)
-                self.pressureLabel.text = "\(self.pressure)"
+                if !self.altitudeShowing {
+                  self.altitudeLabel.text = "\(self.windSpeed)"
+                  self.windDirLabel.text = "\(self.windDir)"
+                  // self.windDirImage.image = UIImage(named: "wind-dir.png")
+                }
+                if self.baroShowing {
+                  self.pressureLabel.text = "\(self.pressure)"
+                } else {
+                  self.pressureLabel.text = "\(self.temp)"
+                }
                 self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
               })
 
@@ -426,6 +486,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
       let pressureInHG = pressureInMB * 0.0295333727
       print(pressureInHG)
       return roundToDecimal(pressureInHG, 1.0)
+  }
+  
+  func getWindDirection(bearing: Double) -> String {
+    let cards = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+    var dir = ""
+    for (i, card) in enumerate(cards) {
+      if bearing < 45.0/2.0 + 45.0*Double(i) {
+        dir = card
+        break
+      }
+    }
+    print( "wind dir is: \(dir)")
+    return dir
+    
   }
   
   func formatDescription(var description: String) -> String {
@@ -636,9 +710,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             if keyPath == "heading" {
                 courseLabel.text = "\(userLocationData.headingRounded)º"
                 compassImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians))
+                northMarksImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians))
                 if directionLabel.text != userLocationData.dir {
                     directionLabel.text = userLocationData.dir
                 }
+                windDirImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians - windBearingRadians))
             } else if keyPath == "location" {
                 // mapView.setCenterCoordinate(CLLocationCoordinate2D(latitude: latitude, longitude: longitude), zoomLevel: 15, animated: true)
                 // coordinatesLabel.text = self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon)
@@ -647,8 +723,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
                   
                   self.coordinatesButton.layoutIfNeeded()
                 })
-                
-                altitudeLabel.text = userLocationData.altitude
+              
+              
+                if altitudeShowing {
+                  altitudeLabel.text = userLocationData.altitude
+                }
+              
+              if userLocationData.getInitialLocation {
+                print(" lon before centering map in getInitalLocation: \(userLocationData.lon) ")
+                map.setCenterCoordinate(CLLocationCoordinate2D(latitude: userLocationData.lat, longitude: userLocationData.lon), zoomLevel: 15, animated: true)
+                getWeatherConditions(userLocationData.lat, longitude: userLocationData.lon)
+                userLocationData.getInitialLocation = false
+              }
+              
             }
 
             
@@ -705,9 +792,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             // gps may not have updated yet
             if self.userLocationData.lat != nil {
               self.coordinatesButton.setTitle(self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon), forState: .Normal)
-            } else {
+            }
+            /*
+            else {
               self.coordinatesButton.setTitle(self.coordinateString(self.latitude, longitude: self.longitude), forState: .Normal)
             }
+            */
           
             // self.coordinatesBackground.hidden = false
             // self.coordinatesLabel.hidden = false
@@ -733,6 +823,46 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         
         
         
+    }
+  
+    func handleSwitch(sender: UIGestureRecognizer) {
+      if sender.view == altitudeWindSwitchView {
+        print("altitude wind switch view tapped")
+        if altitudeShowing {
+          altWindLabel.text = "WINDSOCK"
+          altitudeLabel.text = "\(windSpeed)"
+          altitudeUnitsLabel.text = "MPH"
+          windDirLabel.hidden = false
+          windDirLabel.text = "\(windDir)"
+          windDirImage.hidden = false
+          altitudeShowing = false
+        } else {
+          windDirLabel.hidden = true
+          windDirImage.hidden = true
+          altWindLabel.text = "ALTIMETER"
+          altitudeLabel.text = userLocationData.altitude
+          altitudeUnitsLabel.text = "FT"
+          altitudeShowing = true
+        }
+        
+      } else if sender.view == baroTempSwitchView {
+        print("baro temp switch view tapped")
+        if baroShowing {
+          pressureDirectionLabel.hidden = true
+          baroTempLabel.text = "THERMOMETER"
+          pressureLabel.text = "\(temp)"
+          pressureUnitsLabel.text = "ºF"
+          weatherIcon.hidden = false
+          baroShowing = false
+        } else {
+          weatherIcon.hidden = true
+          baroTempLabel.text = "BAROMETER"
+          pressureLabel.text = "\(pressure)"
+          pressureUnitsLabel.text = "inHg"
+          pressureDirectionLabel.hidden = false
+          baroShowing = true
+        }
+      }
     }
     
     @IBAction func unwindToViewController (sender: UIStoryboardSegue){

@@ -35,6 +35,7 @@
 		<string>Nitti-Light.otf</string>
 		<string>Nitti-Normal.otf</string>
 		<string>Nitti-Bold.otf</string>
+		<string>SourceCodePro-Medium.ttf</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
