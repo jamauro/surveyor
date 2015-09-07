@@ -77,7 +77,7 @@
                                 <color key="textColor" red="0.14901960784313725" green="0.14901960784313725" blue="0.14901960784313725" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="windsock-dir.png" translatesAutoresizingMaskIntoConstraints="NO" id="ztl-7I-Pt8">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="windsock-dir-default.png" translatesAutoresizingMaskIntoConstraints="NO" id="ztl-7I-Pt8">
                                 <rect key="frame" x="141" y="421" width="36" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ztl-7I-Pt8" secondAttribute="height" multiplier="1:1" id="Ieo-zX-guP"/>
@@ -432,7 +432,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="1" green="0.28627450980392155" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="0.2196078431372549" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="PbS-pI-zdD" firstAttribute="top" secondItem="anz-Tc-Cgb" secondAttribute="bottom" constant="-1" id="Fex-o2-Ipq"/>
                                     <constraint firstItem="PbS-pI-zdD" firstAttribute="top" secondItem="anz-Tc-Cgb" secondAttribute="bottom" constant="-1" id="PzA-j3-Jqv"/>
@@ -503,7 +503,7 @@
                                     <segment title="Covert"/>
                                     <segment title="Satellite"/>
                                 </segments>
-                                <color key="tintColor" red="0.0" green="0.82352941176470584" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" red="0.22745098039215686" green="0.83137254901960778" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="mapSelection:" destination="AYb-Kp-do8" eventType="valueChanged" id="Tva-jR-O0x"/>
                                 </connections>
@@ -562,6 +562,6 @@
         <image name="map-layers.png" width="40" height="40"/>
         <image name="northMarks.png" width="304" height="304"/>
         <image name="topTicks.png" width="304" height="304"/>
-        <image name="windsock-dir.png" width="36" height="36"/>
+        <image name="windsock-dir-default.png" width="36" height="36"/>
     </resources>
 </document>

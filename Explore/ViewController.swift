@@ -422,7 +422,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
                 if !self.altitudeShowing {
                   self.altitudeLabel.text = "\(self.windSpeed)"
                   self.windDirLabel.text = "\(self.windDir)"
-                  // self.windDirImage.image = UIImage(named: "wind-dir.png")
                 }
                 if self.baroShowing {
                   self.pressureLabel.text = "\(self.pressure)"
@@ -430,6 +429,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
                   self.pressureLabel.text = "\(self.temp)"
                 }
                 self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
+                self.windDirImage.image = UIImage(named: "windsock-dir.png")
               })
 
 
@@ -490,7 +490,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
   
   func getWindDirection(bearing: Double) -> String {
     let cards = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
-    var dir = ""
+    var dir = "N"
     for (i, card) in enumerate(cards) {
       if bearing < 45.0/2.0 + 45.0*Double(i) {
         dir = card
