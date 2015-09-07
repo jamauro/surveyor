@@ -15,12 +15,15 @@
 
   <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,500,600,700,900' rel='stylesheet' type='text/css'>
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/animate.css">
+  <link rel="stylesheet" href="css/morphext.css">
+  <link rel="stylesheet" href="css/animated-headlines.css">
   <link rel="stylesheet" href="css/custom.css">
 
   <!-- Favicon
@@ -54,7 +57,7 @@
                 <desc>Created with Sketch.</desc>
                 <defs></defs>
                 <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-                    <g id="Desktop-Copy" sketch:type="MSArtboardGroup" transform="translate(-509.000000, -102.000000)" fill="#51CAF4">
+                    <g id="Desktop-Copy" sketch:type="MSArtboardGroup" transform="translate(-509.000000, -102.000000)" fill="#3AD4FF">
                         <g id="North-marks" sketch:type="MSLayerGroup" transform="translate(509.433594, 102.000000)">
                             <rect id="Rectangle-161" sketch:type="MSShapeGroup" x="21.8181818" y="0" width="8" height="26.6666667" rx="4"></rect>
                             <rect id="Rectangle-160" sketch:type="MSShapeGroup" x="0" y="0" width="8" height="26.6666667" rx="4"></rect>
@@ -71,9 +74,17 @@
       <div class="row">
         <div class="column">
           <h4>The instrument for adventures</h4>
-          <p>Coming soon to the App Store</p>
-          <a class="notifyme button button-primary" href="http://goo.gl/forms/DJJycG4YyU">Notify me</a>
-          <!-- <a class="download" href="#"><img src="images/download.svg" alt="download surveyor"></a> -->
+          <!-- <p class="cd-headline letters type">
+            <span>A perfect companion for</span>
+            <span class="cd-words-wrapper waiting">
+              <b class="is-visible">your hiking trip</b>
+              <b>a mountaineering expedition</b>
+              <b>monitoring conditions at basecamp</b>
+            </span>
+          </p> -->
+          <p>A perfect companion for <span id="js-rotating">hiking the trails, camping in the wilderness, a mountaineering expedition, sailing around the world, scaling the 14ners, exploring the great outdoors, a fishing excursion, backpacking in the backcountry, when you're in BFE, hunting big game, monitoring conditions at basecamp, assessing the terrain</span></p>
+          <!-- <a class="notifyme button button-primary" href="http://goo.gl/forms/DJJycG4YyU">Notify me</a> -->
+          <a class="download" href="http://apple.co/1K3ppAE"><img src="images/download.svg" alt="download surveyor"></a>
         </div>
         <div class="eight offset-by-two columns hero-image">
           <img src="images/surveyor-phone.png">
@@ -86,6 +97,26 @@
       <p class="copyright">©surveyor. Designed &amp; developed by <a href="http://twitter.com/johnamauro">@johnamauro</a></p>
     </div>
   </footer>
+
+  <!-- JS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="js/jquery-2.1.4.min.js"></script>
+  <script src="js/morphext.min.js"></script>
+  <script src="js/typed.min.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    $("#js-rotating").Morphext({
+      // The [in] animation type. Refer to Animate.css for a list of available animations.
+      animation: "fadeInDown",
+      // An array of phrases to rotate are created based on this separator. Change it if you wish to separate the phrases differently (e.g. So Simple | Very Doge | Much Wow | Such Cool).
+      separator: ",",
+      // The delay between the changing of each phrase in milliseconds.
+      speed: 3000
+      // complete: function () {
+          // Called after the entrance animation is executed.
+      // }
+    });
+  </script>
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
