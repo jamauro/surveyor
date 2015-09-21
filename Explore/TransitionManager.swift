@@ -56,8 +56,8 @@ class TransitionManager: NSObject, UIViewControllerAnimatedTransitioning, UIView
       }
       
       // add the both views to our view controller. NOTE: order matters
-      container.addSubview(bottomView)
-      container.addSubview(menuView)
+      container!.addSubview(bottomView)
+      container!.addSubview(menuView)
       
       
       // get the duration of the animation
@@ -72,14 +72,14 @@ class TransitionManager: NSObject, UIViewControllerAnimatedTransitioning, UIView
       UIView.animateWithDuration(duration, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.8, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
         
         if self.presenting {
-          print("presenting true")
+          print("presenting true", terminator: "")
           menuView.alpha = 1
           mapSelectionModalViewController.mapSegmentedControl.transform = CGAffineTransformIdentity
           mapSelectionModalViewController.creditsLabel.transform = CGAffineTransformIdentity
           mapSelectionModalViewController.selectionBackground.transform = CGAffineTransformIdentity
           mapSelectionModalViewController.divider.transform = CGAffineTransformIdentity
         } else {
-          print("presenting false")
+          print("presenting false", terminator: "")
           menuView.alpha = 0
           mapSelectionModalViewController.mapSegmentedControl.transform = offstageBottom
           mapSelectionModalViewController.creditsLabel.transform = offstageBottom
@@ -101,7 +101,7 @@ class TransitionManager: NSObject, UIViewControllerAnimatedTransitioning, UIView
       
     }
   
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
         return 0.25
     }
     

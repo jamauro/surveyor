@@ -88,14 +88,14 @@ class WeatherAlertViewController: UIViewController {
   }
   
   func flickUp(flick: UIPanGestureRecognizer) {
-    var translation = flick.translationInView(mainAlertView)
+    let translation = flick.translationInView(mainAlertView)
     if translation.y < 0 {
       // dismissViewControllerAnimated(true, completion: nil)
       UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
         self.view.frame = CGRectMake(0, -self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)
         }, completion: { (finished) -> Void in
-          println("flickedUp")
-          // self.view.removeFromSuperview()
+          print("flickedUp", terminator: "")
+          self.view.removeFromSuperview()
           self.removeFromParentViewController()
           UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .None)
       })
@@ -165,10 +165,13 @@ class WeatherAlertViewController: UIViewController {
     if pan.state == .Ended {
       panGestureEnded()
     } else if pan.state == .Began {
-      println("pan began")
+      print("pan began", terminator: "")
       snapToBottom()
     } else {
-      animator.removeBehavior(snap)
+      print("snap is \(snap)")
+      if snap != nil {
+        animator.removeBehavior(snap)
+      }
       snap = UISnapBehavior(item: slideDownView, snapToPoint: CGPointMake(CGRectGetMidX(movement), CGRectGetMidY(movement)))
       animator.addBehavior(snap)
     }
@@ -204,7 +207,7 @@ class WeatherAlertViewController: UIViewController {
   }
   
   override func viewDidLayoutSubviews() {
-    slideDownView.frame = CGRectOffset(slideDownView.frame, 0, -self.view.frame.size.height + 58)
+    slideDownView.frame = CGRectOffset(slideDownView.frame, 0, -self.view.frame.size.height) // + 58
     //alertDescriptionLabel.frame.size
     setup()
   }

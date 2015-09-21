@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 import CoreMotion
-import MapboxGL
+import Mapbox
 
 class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, MapSelectionModalDelegate {
 
@@ -164,7 +164,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         super.viewDidLoad()
         userLocationData.startTracking()
   
-        print("initialLocation " + toString(userLocationData.initialLocation))
+        print("initialLocation " + String(userLocationData.initialLocation))
         // Do any additional setup after loading the view, typically from a nib.
         print("main view loaded")
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .None)
@@ -318,19 +318,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     func setMapStyle(number: Int) {
         switch number {
             case 0:
-            map.styleURL = NSURL(string: "asset://styles/outdoors-v7.json")!
+            map.styleURL = NSURL(string: "asset://styles/outdoors-v8.json")!
             // return "asset://styles/dark-v7.json"
             
             case 1:
-            map.styleURL = NSURL(string: "asset://styles/dark-v7.json")!
+            map.styleURL = NSURL(string: "asset://styles/dark-v8.json")!
             // return "asset://styles/outdoors-v7.json"
             
             case 2:
-            map.styleURL = NSURL(string: "asset://styles/satellite-v7.json")!
+            map.styleURL = NSURL(string: "asset://styles/satellite-v8.json")!
             // return "asset://styles/mapbox-streets-v7.json"
          
             default:
-            map.styleURL = NSURL(string: "asset://styles/outdoors-v7.json")!
+            map.styleURL = NSURL(string: "asset://styles/outdoors-v8.json")!
             // return "asset://styles/dark-v7.json"
             
         }
@@ -350,148 +350,104 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
     }
   
   
-    func getWeatherConditions(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
-      
+  func getWeatherConditions(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
+    
       // print(" initialLocation lat: \(userLocationData.initialLocation.coordinate.latitude) ")
-      print(" lon: \(longitude) ")
+    print(" lon: \(longitude) ")
       
   
       
-        let forecastID = valueForAPIKey(keyname: "API_CLIENT_ID")
+    let forecastID = valueForAPIKey(keyname: "API_CLIENT_ID")
         // let urlPath = "https://api.forecast.io/forecast/\(forecastID)/37.6783,-92.6617"
       
-        let urlPath = "https://api.forecast.io/forecast/\(forecastID)/" + toString(latitude) + "," + toString(longitude)
+    let urlPath = "https://api.forecast.io/forecast/\(forecastID)/" + String(latitude) + "," + String(longitude)
         
-        let url = NSURL(string: urlPath)
-        print(url!)
+    let url = NSURL(string: urlPath)
+    print(url!)
   
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithURL(url!) { (data, response, error) -> Void in
-          if error == nil {
-
-              let jsonResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
-              
-              print(jsonResult)
-              
-              let hourlyData = jsonResult["hourly"]!["data"]! as! NSArray
-              
-              for data in hourlyData {
-                let pressureInFuture: Double = data["pressure"] as! Double
-                self.futurePressures.append(pressureInFuture)
-              }
-              
-              
-              // print(self.futurePressures)
-              let pressureDirection = self.determinePressureDirection(self.futurePressures)
-              
-              let currentConditions = jsonResult["currently"]
-              let currentPressure = currentConditions?["pressure"]
-              self.windSpeed = roundToDecimal(currentConditions?["windSpeed"] as! Double, 1.0)
-              self.windBearing = currentConditions?["windBearing"] as! Double
-              self.windDir = self.getWindDirection(self.windBearing)
-              self.windBearingRadians = (-1.0 * self.windBearing * M_PI)/180.0
-              self.temp = roundToDecimal(currentConditions?["temperature"] as! Double, 1.0)
-              
-              if let alerts: NSArray = jsonResult["alerts"] as? NSArray {
-                let lastAlert: AnyObject = alerts.lastObject!
-                print("last alert is: \(lastAlert)")
-                if let alertTitle = lastAlert["title"] as? String {
-                  self.alertTitle = alertTitle.trimUpTo("for").uppercaseString
-                }
-                if let expires: NSTimeInterval = lastAlert["expires"] as? NSTimeInterval {
-                  self.alertLocalExpireTime = self.formatDate(expires)
-                }
-                
-                if let description = lastAlert["description"] as? String {
-                  self.alertDescription = self.formatDescription(description)
-                  print("description is: \(description)")
-                }
-                
-                // WEATHER ALERTS!
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                  self.showWeatherAlert()
-                })
-                
-      
-                
-              }
-              
-              
-              dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.pressure = self.convertPressure(currentPressure as! Double)
-                if !self.altitudeShowing {
-                  self.altitudeLabel.text = "\(self.windSpeed)"
-                  self.windDirLabel.text = "\(self.windDir)"
-                }
-                if self.baroShowing {
-                  self.pressureLabel.text = "\(self.pressure)"
-                } else {
-                  self.pressureLabel.text = "\(self.temp)"
-                }
-                self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
-                self.windDirImage.image = UIImage(named: "windsock-dir.png")
-              })
-
-
-          } else {
-            print(error)
-            self.pressureLabel.text = "N/A"
+    let session = NSURLSession.sharedSession()
+    let task = session.dataTaskWithURL(url!) { (data, response, error) -> Void in
+      if error == nil {
+        // swift 2.0
+        do {
+          let jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+          print(jsonResult)
+          
+          let hourlyData = jsonResult["hourly"]!["data"]! as! NSArray
+          
+          for data in hourlyData {
+            let pressureInFuture: Double = data["pressure"] as! Double
+            self.futurePressures.append(pressureInFuture)
           }
-          /* swift 2.0
-            do {
-                let jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
-                print(jsonResult)
-                let hourlyData = jsonResult["hourly"]!["data"]! as! NSArray
-                
-                for data in hourlyData {
-                    
-                    guard let pressureInFuture = data["pressure"]! else {
-                        return
-                    }
-                    self.futurePressures.append(pressureInFuture as! Double)
-                    
-                }
-                
-                
-                print(self.futurePressures)
-                let pressureDirection = self.determinePressureDirection(self.futurePressures)
-                
-                guard let currentConditions = jsonResult["currently"] else {
-                    return
-                }
-                guard let currentPressure = currentConditions["pressure"] else {
-                    return
-                }
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.pressure = self.convertPressure(currentPressure as! Double)
-                    self.pressureLabel.text = "\(self.pressure)"
-                    self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
-                })
-                
-                
-                
-            } catch {
-                print(error)
-                self.pressureLabel.text = "N/A"
+          
+          
+          // print(self.futurePressures)
+          let pressureDirection = self.determinePressureDirection(self.futurePressures)
+          
+          let currentConditions = jsonResult["currently"]
+          let currentPressure = currentConditions?["pressure"]
+          self.windSpeed = roundToDecimal(currentConditions?["windSpeed"] as! Double, numberOfPlaces: 1.0)
+          self.windBearing = currentConditions?["windBearing"] as! Double
+          self.windDir = self.getWindDirection(self.windBearing)
+          self.windBearingRadians = (-1.0 * self.windBearing * M_PI)/180.0
+          self.temp = roundToDecimal(currentConditions?["temperature"] as! Double, numberOfPlaces: 1.0)
+          
+          if let alerts: NSArray = jsonResult["alerts"] as? NSArray {
+            let lastAlert: AnyObject = alerts.lastObject!
+            print("last alert is: \(lastAlert)")
+            if let alertTitle = lastAlert["title"] as? String {
+              self.alertTitle = alertTitle.trimUpTo("for").uppercaseString
             }
-            */
+            if let expires: NSTimeInterval = lastAlert["expires"] as? NSTimeInterval {
+              self.alertLocalExpireTime = self.formatDate(expires)
+            }
+            
+            if let description = lastAlert["description"] as? String {
+              self.alertDescription = self.formatDescription(description)
+              print("description is: \(description)")
+            }
+            
+            // WEATHER ALERTS!
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+              self.showWeatherAlert()
+            })
+          }
+          
+          
+          dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.pressure = self.convertPressure(currentPressure as! Double)
+            if !self.altitudeShowing {
+              self.altitudeLabel.text = "\(self.windSpeed)"
+              self.windDirLabel.text = "\(self.windDir)"
+            }
+            if self.baroShowing {
+              self.pressureLabel.text = "\(self.pressure)"
+            } else {
+              self.pressureLabel.text = "\(self.temp)"
+            }
+            self.pressureDirectionLabel.image = UIImage(named: pressureDirection)
+            self.windDirImage.image = UIImage(named: "windsock-dir.png")
+          })
+          
+        } catch {
+          print(error)
+          self.pressureLabel.text = "N/A"
         }
-        
-        task.resume()
-        
+      }
     }
-    
+    task.resume()
+  }
+  
   func convertPressure(pressureInMB: Double) -> Double {
       let pressureInHG = pressureInMB * 0.0295333727
       print(pressureInHG)
-      return roundToDecimal(pressureInHG, 1.0)
+      return roundToDecimal(pressureInHG, numberOfPlaces: 1.0)
   }
   
   func getWindDirection(bearing: Double) -> String {
     let cards = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
     var dir = "N"
-    for (i, card) in enumerate(cards) {
+    for (i, card) in cards.enumerate() {
       if bearing < 45.0/2.0 + 45.0*Double(i) {
         dir = card
         break
@@ -701,12 +657,53 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         
     }
   
-  
+  override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    
+    
+    // if mapIsFullScreen == false {
+    
+    if keyPath == "heading" {
+      courseLabel.text = "\(userLocationData.headingRounded)º"
+      compassImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians))
+      northMarksImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians))
+      if directionLabel.text != userLocationData.dir {
+        directionLabel.text = userLocationData.dir
+      }
+      windDirImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians - windBearingRadians))
+    } else if keyPath == "location" {
+      // mapView.setCenterCoordinate(CLLocationCoordinate2D(latitude: latitude, longitude: longitude), zoomLevel: 15, animated: true)
+      // coordinatesLabel.text = self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon)
+      UIView.performWithoutAnimation({ () -> Void in
+        self.coordinatesButton.setTitle(self.coordinateString(self.userLocationData.lat, longitude: self.userLocationData.lon), forState: .Normal)
         
+        self.coordinatesButton.layoutIfNeeded()
+      })
+      
+      
+      if altitudeShowing {
+        altitudeLabel.text = userLocationData.altitude
+      }
+      
+      if userLocationData.getInitialLocation {
+        print(" lon before centering map in getInitalLocation: \(userLocationData.lon) ")
+        map.setCenterCoordinate(CLLocationCoordinate2D(latitude: userLocationData.lat, longitude: userLocationData.lon), zoomLevel: 15, animated: true)
+        getWeatherConditions(userLocationData.lat, longitude: userLocationData.lon)
+        userLocationData.getInitialLocation = false
+      }
+      
+    }
+    
+    
+    // }
+  }
+  /*
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+      
+
+      
         // if mapIsFullScreen == false {
-            
+      
             if keyPath == "heading" {
                 courseLabel.text = "\(userLocationData.headingRounded)º"
                 compassImage.transform = CGAffineTransformMakeRotation(CGFloat(userLocationData.headingRadians))
@@ -742,7 +739,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
         // }
         
     }
-    
+    */
     func coordinateString(latitude:Double, longitude:Double) -> String {
         var latSeconds = Int(latitude * 3600)
         let latDegrees = latSeconds / 3600
@@ -774,8 +771,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
             self.map.frame = self.view.bounds
             self.map.layer.cornerRadius = 0
             // this makes the map's subviews align like they should when it expands.
-            // XCODE BUG, fixed in xcode 7: self.map.translatesAutoresizingMaskIntoConstraints = true
-            self.map.setTranslatesAutoresizingMaskIntoConstraints(true)
+            // XCODE BUG, fixed in xcode 7: 
+            self.map.translatesAutoresizingMaskIntoConstraints = true
+          
           
         })) { (complete) -> Void in
             
@@ -865,7 +863,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIGestureReco
       }
     }
     
-    @IBAction func unwindToViewController (sender: UIStoryboardSegue){
+    func unwindToViewController (sender: UIStoryboardSegue){
         
     }
   

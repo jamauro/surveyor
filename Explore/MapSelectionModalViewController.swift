@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import MapboxGL
+import Mapbox
 
 protocol MapSelectionModalDelegate {
     func modalDidFinish(controller: MapSelectionModalViewController, mapSelection: Int)
@@ -57,7 +57,7 @@ class MapSelectionModalViewController: UIViewController, UIGestureRecognizerDele
         // Control transitions with TransitionManager
         self.transitioningDelegate = self.transitionManager
         
-        print(selectionBackground.superview)
+        print(selectionBackground.superview, terminator: "")
         
         tap = UITapGestureRecognizer(target: self, action: "tapOutside:")
         // not sure this is necessary

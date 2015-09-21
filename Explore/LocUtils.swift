@@ -54,7 +54,7 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
 
     }
 
-  func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+  func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.AuthorizedAlways {
       getInitialLocation = true
       self.locationManager.startUpdatingLocation()
@@ -89,7 +89,7 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
         
         let cards = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         dir = "N"
-        for (i, card) in enumerate(cards) {
+        for (i, card) in cards.enumerate() {
             if heading < 45.0/2.0 + 45.0*Double(i) {
                 dir = card
                 break
@@ -109,7 +109,36 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
 
         
     }
+  
+  func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    self.willChangeValueForKey("location")
+    let userLocation: CLLocation = locations[0] 
+    
+    if userLocation.horizontalAccuracy > 0 {
+      // locationAchieved = true
+      self.lat = userLocation.coordinate.latitude
+      self.lon = userLocation.coordinate.longitude
+      /*
+      if getInitialLocation == true {
+      print(" initial lat is: \(lat) ")
+      // rootVC.initializeMapAndWeather()
+      
+      getInitialLocation = false
+      }
+      */
+    }
+    
+    // set altitude in FT
+    if userLocation.verticalAccuracy > 0 {
+      self.altitude = String(format:"%.0f", userLocation.altitude.ft)
+    }
+    
+    self.didChangeValueForKey("location")
+    // altitudeLabel.text = altitude
+  }
 
+  }
+/*
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [AnyObject]) {
 
         self.willChangeValueForKey("location")
@@ -140,4 +169,4 @@ class LocUtils: NSObject, CLLocationManagerDelegate {
     }
 
 }
-
+*/

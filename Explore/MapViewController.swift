@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import MapboxGL
+import Mapbox
 
 
 class MapViewController: UIViewController {
@@ -60,7 +60,17 @@ class MapViewController: UIViewController {
     
         
     }
-    
+  
+  override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    if keyPath == "heading" {
+      if dirLabel.text != userLocationData.dir {
+        dirLabel.text = userLocationData.dir
+      }
+    } else if keyPath == "location" {
+      altitudeLabel.text = userLocationData.altitude
+    }
+  }
+  /*
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "heading" {
             if dirLabel.text != userLocationData.dir {
@@ -70,5 +80,5 @@ class MapViewController: UIViewController {
             altitudeLabel.text = userLocationData.altitude
         }
     }
-
+*/
 }
